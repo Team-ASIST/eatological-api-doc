@@ -1,0 +1,331 @@
+---
+openapi: 3.0.0
+info:
+  title: Backend API
+  description: Eatological backend api
+  contact:
+    email: you@your-company.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.1.0
+servers:
+- url: https://eatological-dev.azurewebsites.net
+  description: Our beatiful dev server
+- url: https://eatological-backend.azurewebsites.net
+  description: The main backend, hopefully it will always work
+tags:
+- name: all
+  description: Operations available for everyone
+- name: authenticated
+  description: Operations available only for authenticated users
+paths:
+  /status:
+    get:
+      tags:
+      - all
+      summary: gets the status of the api
+      description: "Returns the current status of the api and database.\nUseful to \"wake up\" the webservice. \n"
+      operationId: getStatus
+      responses:
+        "200":
+          description: the status of the backend and the database connection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "401":
+          description: some error
+  /token:
+    get:
+      tags:
+      - all
+      summary: gets a token for a specific user
+      description: Returns a session token for the given username
+      operationId: getToken
+      parameters:
+      - name: user
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: The token for the given user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+  /ingredients:
+    get:
+      tags:
+      - authenticated
+      summary: Returns all available ingredients from the database
+      description: The ingredients in an unorderd list.
+      responses:
+        "200":
+          description: List on ingredients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ingredient'
+      security:
+      - EatologicalAuth: []
+  /recipes:
+    get:
+      tags:
+      - authenticated
+      summary: Returns all available recipes from the database
+      description: The recipes in an unorderd list.
+      responses:
+        "200":
+          description: List on recipes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+      security:
+      - EatologicalAuth: []
+  /plan/create:
+    get:
+      tags:
+      - authenticated
+      summary: Starts the creation of a plan
+      description: A request to this endpoint initiates the generation of a new meal plan. This creationn my take a while. The request will only terminate after a new plan was generated. Therefore you should request this in the background (async).
+      parameters:
+      - name: Portions
+        in: header
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+      - name: Leftovers
+        in: header
+        required: false
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Item'
+      - name: Preferences
+        in: header
+        required: false
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Item'
+      responses:
+        "200":
+          description: A plan, which mainly contains multiple recipes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+      security:
+      - EatologicalAuth: []
+  /plan/swipeleft:
+    get:
+      tags:
+      - authenticated
+      summary: Swipes the selected ingredient to the left
+      description: The swiping indicates, that the backend should generate a new recipe for the given slot
+      parameters:
+      - name: Slot
+        in: header
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: number
+      responses:
+        "200":
+          description: The new plan with the swapped recipe at the given slot
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+      security:
+      - EatologicalAuth: []
+  /plan/swiperight:
+    get:
+      tags:
+      - authenticated
+      summary: Swipes the selected ingredient to the right
+      description: The swiping indicates, that the backend should use the previous recipe for the given slot
+      parameters:
+      - name: Slot
+        in: header
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: number
+      responses:
+        "200":
+          description: The new plan with the swapped recipe at the given slot
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+      security:
+      - EatologicalAuth: []
+  /plan/accept:
+    get:
+      tags:
+      - authenticated
+      summary: Accepts the current plan
+      description: This accepts the current plan, which will close the session for this user. Every setting (like leftovers, ...), previous recipes, etc. are lost. Please use /plan/create to instantiate a new session, otherwise this endpoint returns an error.
+      responses:
+        "200":
+          description: The current plan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+      security:
+      - EatologicalAuth: []
+components:
+  schemas:
+    Status:
+      required:
+      - apiStatus
+      - databaseStatus
+      type: object
+      properties:
+        apiStatus:
+          type: string
+          example: running
+        databaseStatus:
+          type: string
+          example: running
+    Token:
+      required:
+      - token
+      properties:
+        token:
+          type: string
+          example: PaulHierGibtsNixZuSehen
+    Ingredient:
+      required:
+      - alternative
+      - amount
+      - id
+      - local
+      - name
+      - season
+      - smallestAmount
+      - unit
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Roastbeef
+        smallestAmount:
+          type: number
+          example: 50
+        amount:
+          type: number
+          example: 1
+        unit:
+          type: string
+          example: g
+        season:
+          type: boolean
+          example: false
+        local:
+          type: boolean
+          example: false
+        alternative:
+          type: string
+          nullable: true
+    Recipe:
+      required:
+      - id
+      - imageUrl
+      - ingredients
+      - name
+      - prepTime
+      - steps
+      - totalTime
+      properties:
+        id:
+          type: integer
+          example: 3
+        name:
+          type: string
+          example: Pilz-Spaghettini
+        prepTime:
+          type: integer
+          example: 30
+        totalTime:
+          type: integer
+          example: 100
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+        steps:
+          type: array
+          items:
+            type: string
+            example: Don't burn it. Otherwise you can't eat it
+        imageUrl:
+          type: string
+          example: https://eatological.blob.core.windows.net/recipe-images/recipe3.jpg
+    Item:
+      required:
+      - id
+      - smallestAmountNumber
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        smallestAmountNumber:
+          type: number
+          example: 42.73
+    Plan:
+      required:
+      - meals
+      - sustainabilityScore
+      properties:
+        meals:
+          type: array
+          items:
+            $ref: '#/components/schemas/Meal'
+        sustainabilityScore:
+          type: number
+          example: 0.4
+    Meal:
+      required:
+      - cooked
+      - portion
+      - recipe
+      properties:
+        recipe:
+          $ref: '#/components/schemas/Recipe'
+        portion:
+          type: integer
+          example: 4
+        cooked:
+          type: boolean
+          example: false
+  securitySchemes:
+    EatologicalAuth:
+      type: apiKey
+      name: EatologicalToken
+      in: header
