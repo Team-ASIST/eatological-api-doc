@@ -44,11 +44,9 @@ paths:
       description: Returns a session token for the given username
       operationId: getToken
       parameters:
-      - name: user
-        in: query
+      - name: User
+        in: header
         required: true
-        style: form
-        explode: true
         schema:
           type: string
       responses:
@@ -58,6 +56,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Token'
+  /user/add:
+    get:
+      tags:
+        - all
+      summary: Adds a given user name. To retrieve a token, please use /token.
+      description: The given username must be available.
+      operationId: userAdd
+      parameters:
+        - name: User
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The user is saved now and can be used to retrieve tokens.
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Added User HippityHoppityYourMomIsNowMyProperty" 
+        "409":
+          description: An error occured. Maybe the user is already taken.
   /ingredients:
     get:
       tags:
