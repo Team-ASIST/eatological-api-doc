@@ -196,6 +196,45 @@ paths:
                 $ref: '#/components/schemas/Plan'
       security:
       - EatologicalAuth: []
+
+  /groceries:
+    get:
+      tags:
+      - authenticated
+      summary: Returns your current groceries.
+      description: Returns the groceries for the currently accepted plan. These groceries are saving the needed and the already bought amount.
+      responses:
+        "200":
+          description: The current groceries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Grocery'
+      security:
+      - EatologicalAuth: []
+
+  /groceries/buy:
+    get:
+      tags:
+      - authenticated
+      summary: Allows to buy one specific ingredient.
+      description: The given ingredient will be bought completely, e.g. the amount is the difference of needed - bought.
+      responses:
+        "200":
+          description: The updated groceries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Grocery'
+      security:
+      - EatologicalAuth: []
+
+  
+  
 components:
   schemas:
     Status:
@@ -324,6 +363,23 @@ components:
         cooked:
           type: boolean
           example: false
+    Grocery:
+      required:
+        - ingredientId
+        - required
+        - bought
+      properties:
+        ingredientId:
+          type: integer
+          example: 4
+        required:
+          type: number
+          example: 2
+        bought:
+          type: number
+          example: 1.5
+
+
   securitySchemes:
     EatologicalAuth:
       type: apiKey
