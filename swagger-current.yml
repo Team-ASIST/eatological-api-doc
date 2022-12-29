@@ -40,11 +40,11 @@ paths:
     get:
       tags:
       - all
-      summary: gets a token for a specific user
+      summary: Gets a token for a specific user
       description: Returns a session token for the given username
       operationId: getToken
       parameters:
-      - name: User
+      - name: Username
         in: header
         required: true
         schema:
@@ -64,7 +64,7 @@ paths:
       description: The given username must be available.
       operationId: userAdd
       parameters:
-        - name: User
+        - name: Username
           in: header
           required: true
           schema:
@@ -79,6 +79,84 @@ paths:
                 example: "Added User HippityHoppityYourMomIsNowMyProperty" 
         "409":
           description: An error occured. Maybe the user is already taken.
+          content:
+            application/json:
+              schema:
+                properties:
+                  errorCode:
+                    type: string
+                    example: "error"
+                  errorMessage:
+                    type: string
+                    example: "Creating user was not possible."
+  /user/rename:
+    get:
+      tags:
+      - authenticated
+      summary: Renames the user found with the used token to the given value
+      operationId: renameUser
+      parameters:
+      - name: Username
+        in: header
+        required: true
+        schema:
+          type: string
+      security:
+      - EatologicalAuth: []
+      responses:
+        "200":
+          description: Rename was successful
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Renamed User to WerAndernEineGrubeGräbtHatEinGrubenGrabGerät"
+        "409":
+          description: Something went wrong, don't ask me. Probably the given userName was taken.
+          content:
+            application/json:
+              schema:
+                properties:
+                  errorCode:
+                    type: string
+                    example: "error"
+                  errorMessage:
+                    type: string
+                    example: "Updating username was not possible."
+  /user/delete:
+    get:
+      tags:
+      - authenticated
+      summary: Deletes the given user, iff found.
+      operationId: deleteUser
+      parameters:
+      - name: Username
+        in: header
+        required: true
+        schema:
+          type: string
+      security:
+      - EatologicalAuth: []
+      responses:
+        "200":
+          description: Delete was successful
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Removed user."
+        "409":
+          description: Probably the given userName was not taken.
+          content:
+            application/json:
+              schema:
+                properties:
+                  errorCode:
+                    type: string
+                    example: "error"
+                  errorMessage:
+                    type: string
+                    example: "Removing user was not possible."
   /ingredients:
     get:
       tags:
