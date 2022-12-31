@@ -389,6 +389,12 @@ paths:
       - authenticated
       summary: Choose a diet for the authenticated user.
       description: Use /restrictions to get the available diets.
+      parameters:
+      - name: Restriction
+        in: header
+        required: true
+        schema:
+          type: string
       responses:
         "200":
           description: diet successful set
@@ -420,14 +426,10 @@ components:
   schemas:
     Status:
       required:
-      - apiStatus
-      - databaseStatus
+      - message
       type: object
       properties:
-        apiStatus:
-          type: string
-          example: running
-        databaseStatus:
+        message:
           type: string
           example: running
     Token:
