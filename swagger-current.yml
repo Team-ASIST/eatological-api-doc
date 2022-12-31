@@ -354,6 +354,12 @@ paths:
       - authenticated
       summary: Allows to buy one specific ingredient.
       description: The given ingredient will be bought completely, e.g. the amount is the difference of needed - bought.
+      parameters:
+      - name: IngredientId
+        in: header
+        required: true
+        schema:
+          type: integer
       responses:
         "200":
           description: The updated groceries
