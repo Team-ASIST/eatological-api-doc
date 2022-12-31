@@ -57,7 +57,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Token'
   /user/add:
-    get:
+    post:
       tags:
         - all
       summary: Adds a given user name. To retrieve a token, please use /token.
@@ -90,7 +90,7 @@ paths:
                     type: string
                     example: "Creating user was not possible."
   /user/rename:
-    get:
+    put:
       tags:
       - authenticated
       summary: Renames the user found with the used token to the given value
@@ -124,7 +124,7 @@ paths:
                     type: string
                     example: "Updating username was not possible."
   /user/delete:
-    get:
+    delete:
       tags:
       - authenticated
       summary: Deletes the given user, iff found.
@@ -191,6 +191,42 @@ paths:
                   $ref: '#/components/schemas/Recipe'
       security:
       - EatologicalAuth: []
+  /plan:
+    get:
+      tags:
+      - authenticated
+      summary: Returns the current plan
+      description: Returns the active (last accepted!) plan.
+      responses:
+        "200":
+          description: The current plan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+      security:
+      - EatologicalAuth: []
+  /plan/cook:
+    put:
+      tags:
+      - authenticated
+      summary: Marks a recipe as cooked
+      description: The recipe (or meal) is selected by the ID given in the header. Therefore we expect every recipe in a plan to be unique!
+      parameters:
+      - name: RecipeId
+        in: header
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: The new plan the cooked recipe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+      security:
+      - EatologicalAuth: []
   /plan/create:
     get:
       tags:
@@ -235,7 +271,7 @@ paths:
       security:
       - EatologicalAuth: []
   /plan/swipeleft:
-    get:
+    put:
       tags:
       - authenticated
       summary: Swipes the selected ingredient to the left
@@ -258,7 +294,7 @@ paths:
       security:
       - EatologicalAuth: []
   /plan/swiperight:
-    get:
+    put:
       tags:
       - authenticated
       summary: Swipes the selected ingredient to the right
@@ -281,7 +317,7 @@ paths:
       security:
       - EatologicalAuth: []
   /plan/accept:
-    get:
+    post:
       tags:
       - authenticated
       summary: Accepts the current plan
@@ -295,7 +331,6 @@ paths:
                 $ref: '#/components/schemas/Plan'
       security:
       - EatologicalAuth: []
-
   /groceries:
     get:
       tags:
@@ -313,9 +348,8 @@ paths:
                   $ref: '#/components/schemas/Grocery'
       security:
       - EatologicalAuth: []
-
   /groceries/buy:
-    get:
+    put:
       tags:
       - authenticated
       summary: Allows to buy one specific ingredient.
@@ -329,6 +363,54 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Grocery'
+      security:
+      - EatologicalAuth: []
+  /restrictions:
+    get:
+      tags:
+      - authenticated
+      summary: Get all names of diets that exist in dataset.
+      description: Use this endpoint to get the diet names used for /restrictions/set
+      responses:
+        "200":
+          description: All possible diets.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  example: "vegetarian"
+      security:
+      - EatologicalAuth: []
+  /restrictions/set:
+    post:
+      tags:
+      - authenticated
+      summary: Choose a diet for the authenticated user.
+      description: Use /restrictions to get the available diets.
+      responses:
+        "200":
+          description: diet successful set
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: "Set restriction."
+        "409":
+          description: error during diet set
+          content:
+            application/json:
+              schema:
+                properties:
+                  errorCode:
+                    type: string
+                    example: "error"
+                  errorMessage:
+                    type: string
+                    example: "Setting restriction was not possible."
       security:
       - EatologicalAuth: []
 
