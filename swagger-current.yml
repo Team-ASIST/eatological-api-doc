@@ -259,8 +259,9 @@ paths:
           application/json:
             schema:
               type: array
+              description: Use ingredient IDs here
               items:
-                $ref: '#/components/schemas/Item'
+                type: integer
       responses:
         "200":
           description: A plan, which mainly contains multiple recipes
