@@ -516,15 +516,16 @@ components:
           type: string
           example: https://eatological.blob.core.windows.net/recipe-images/recipe3.jpg
     Item:
+      description: Maps a given ingredient id to a quantity
       required:
       - id
-      - smallestAmountNumber
+      - quantity
       type: object
       properties:
         id:
           type: integer
           example: 1
-        smallestAmountNumber:
+        quantity:
           type: number
           example: 42.73
     Plan:
