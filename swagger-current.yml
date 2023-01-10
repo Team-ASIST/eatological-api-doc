@@ -75,8 +75,10 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-                example: "Added User HippityHoppityYourMomIsNowMyProperty" 
+                properties:
+                  message:
+                    type: string
+                    example: "Added User HippityHoppityYourMomIsNowMyProperty" 
         "409":
           description: An error occured. Maybe the user is already taken.
           content:
@@ -109,8 +111,10 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-                example: "Renamed User to WerAndernEineGrubeGräbtHatEinGrubenGrabGerät"
+                properties:
+                  message:
+                    type: string
+                    example: "Renamed User to WerAndernEineGrubeGräbtHatEinGrubenGrabGerät"
         "409":
           description: Something went wrong, don't ask me. Probably the given userName was taken.
           content:
@@ -129,12 +133,6 @@ paths:
       - authenticated
       summary: Deletes the given user, iff found.
       operationId: deleteUser
-      parameters:
-      - name: Username
-        in: header
-        required: true
-        schema:
-          type: string
       security:
       - EatologicalAuth: []
       responses:
@@ -143,8 +141,10 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-                example: "Removed user."
+                properties:
+                  message:
+                    type: string
+                    example: "Removed user."
         "409":
           description: Probably the given userName was not taken.
           content:
