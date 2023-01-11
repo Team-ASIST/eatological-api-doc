@@ -56,6 +56,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Token'
+        "403":
+          description: In case the given user is not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  errorCode:
+                    type: string
+                    example: "apiError"
+                  errorMessage:
+                    type: string
+                    example: "Could not create token for user PaulanerGarten"
+
+        
   /user/add:
     post:
       tags:
@@ -126,7 +140,7 @@ paths:
                     example: "error"
                   errorMessage:
                     type: string
-                    example: "Updating username was not possible."
+                    example: "Updating username AAAAAAAAAAAAAH was not possible."
   /user/delete:
     delete:
       tags:
@@ -145,8 +159,8 @@ paths:
                   message:
                     type: string
                     example: "Removed user."
-        "409":
-          description: Probably the given userName was not taken.
+        "400":
+          description: The token is invalid.
           content:
             application/json:
               schema:
@@ -156,7 +170,7 @@ paths:
                     example: "error"
                   errorMessage:
                     type: string
-                    example: "Removing user was not possible."
+                    example: "Could not find token for user unknown"
   /ingredients:
     get:
       tags:
@@ -267,6 +281,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Plan'
+        "400":
+          description: In case the header parameters are not formatted correctly
+          content:
+            application/json:
+              schema:
+                properties:
+                  errorCode:
+                    type: string
+                    example: "apiError"
+                  errorMessage:
+                    type: string
+                    example: "The header string myMilkshakeBringsAllBaseToTheYard is not a valid json string"
       security:
       - EatologicalAuth: []
   /plan/swipeleft:
@@ -368,6 +394,18 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Grocery'
+        "400":
+          description: In case the header parameters are not formatted correctly
+          content:
+            application/json:
+              schema:
+                properties:
+                  errorCode:
+                    type: string
+                    example: "apiError"
+                  errorMessage:
+                    type: string
+                    example: "The header string ThisIsCertainlyNoJson is not a valid json string"
       security:
       - EatologicalAuth: []
   /restrictions:
@@ -410,8 +448,8 @@ paths:
                   message:
                     type: string
                     example: "Set restriction."
-        "409":
-          description: error during diet set
+        "403":
+          description: error during diet set, should only occur when the user can't be found.
           content:
             application/json:
               schema:
@@ -421,7 +459,7 @@ paths:
                     example: "error"
                   errorMessage:
                     type: string
-                    example: "Setting restriction was not possible."
+                    example: "Could not set restriction vegan for user unknown"
       security:
       - EatologicalAuth: []
 
