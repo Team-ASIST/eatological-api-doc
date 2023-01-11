@@ -160,7 +160,7 @@ paths:
   /ingredients:
     get:
       tags:
-      - authenticated
+      - all
       summary: Returns all available ingredients from the database
       description: The ingredients in an unorderd list.
       responses:
@@ -172,8 +172,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Ingredient'
-      security:
-      - EatologicalAuth: []
   /recipes:
     get:
       tags:
