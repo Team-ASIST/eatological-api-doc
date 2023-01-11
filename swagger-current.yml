@@ -408,10 +408,12 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: string
-                  example: "vegetarian"
+                properties:
+                  restrictions:
+                    type: array
+                    items:
+                      type: string
+                      example: "Vegetarisch"
       security:
       - EatologicalAuth: []
   /restrictions/set:
