@@ -77,12 +77,6 @@ paths:
       summary: Adds a given user name. To retrieve a token, please use /token.
       description: The given username will be random.
       operationId: userAdd
-      parameters:
-        - name: Username
-          in: header
-          required: true
-          schema:
-            type: string
       responses:
         "200":
           description: The user is saved now and can be used to retrieve tokens.
