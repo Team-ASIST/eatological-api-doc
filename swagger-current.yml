@@ -219,6 +219,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Plan'
+        "404":
+          description: No active plan found for the user.
+          content:
+            application/json:
+              schema:
+                properties:
+                  errorCode:
+                    type: string
+                    example: "apiError"
+                  errorMessage:
+                    type: string
+                    example: "Could not find active plan for ThisUserHasNoPlan"
       security:
       - EatologicalAuth: []
   /plan/create:
