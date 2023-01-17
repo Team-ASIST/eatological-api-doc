@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"backend.database.implementation","l":"de.eatological.infrastructure.database"},{"m":"backend.database.implementation","l":"de.eatological.infrastructure.database.entities"},{"m":"backend.database.implementation","l":"de.eatological.infrastructure.database.repositories"}];updateSearchResults();

@@ -1,0 +1,4 @@
+module:backend.database.implementation
+de.eatological.infrastructure.database
+de.eatological.infrastructure.database.entities
+de.eatological.infrastructure.database.repositories
