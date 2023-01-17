@@ -1,0 +1,8 @@
+module:backend.webservice.main
+de.eatological.architecture.webservice
+de.eatological.architecture.webservice.endpoints
+de.eatological.architecture.webservice.endpoints.json.in
+de.eatological.architecture.webservice.endpoints.json.out
+de.eatological.architecture.webservice.exceptions
+de.eatological.architecture.webservice.security
+de.eatological.architecture.webservice.sessionhandling
